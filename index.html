@@ -111,8 +111,7 @@
 
     <script>
         (function() {
-            // ⚠️ YOUR HUGGING FACE TOKEN – replace with your real token
-            // Keep this repo private if you don't want to expose it!
+            // ⚠️ REPLACE WITH YOUR REAL HUGGING FACE TOKEN
             const HF_TOKEN = "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";
             const HF_MODEL = "HuggingFaceH4/zephyr-7b-beta";
             const HF_API_URL = `https://api-inference.huggingface.co/models/${HF_MODEL}/v1/chat/completions`;
@@ -174,8 +173,41 @@
                 return defaults[Math.floor(Math.random() * defaults.length)];
             }
 
+            // Try direct fetch, then fallback to CORS proxy
+            async function callHFAPI(body) {
+                // Direct call first
+                try {
+                    const directRes = await fetch(HF_API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${HF_TOKEN}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(body)
+                    });
+                    if (directRes.ok) return await directRes.json();
+                } catch (e) {
+                    console.log("Direct call failed, trying CORS proxy…");
+                }
+
+                // Fallback: use a public CORS proxy
+                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(HF_API_URL)}`;
+                const proxyRes = await fetch(proxyUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${HF_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+                if (!proxyRes.ok) {
+                    const errText = await proxyRes.text();
+                    throw new Error(`Proxy error ${proxyRes.status}: ${errText}`);
+                }
+                return await proxyRes.json();
+            }
+
             async function aiReply(userMsg) {
-                // If token is clearly invalid (placeholder), use local
                 if (!HF_TOKEN || HF_TOKEN === "YOUR_TOKEN_HERE" || HF_TOKEN.length < 10) {
                     showWarning("🔑 Token missing or invalid. Using local chat.");
                     return localReply(userMsg);
@@ -184,29 +216,12 @@
                 messages.push({ role: "user", content: userMsg });
 
                 try {
-                    const response = await fetch(HF_API_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${HF_TOKEN}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            model: HF_MODEL,
-                            messages: messages,
-                            max_tokens: 60,
-                            temperature: 0.9
-                        })
+                    const data = await callHFAPI({
+                        model: HF_MODEL,
+                        messages: messages,
+                        max_tokens: 60,
+                        temperature: 0.9
                     });
-
-                    if (!response.ok) {
-                        const errText = await response.text();
-                        console.error("HF error:", response.status, errText);
-                        showWarning(`❌ HF error ${response.status}. Using local chat.`);
-                        messages.pop();
-                        return localReply(userMsg);
-                    }
-
-                    const data = await response.json();
 
                     if (data.error) {
                         console.error("HF error:", data.error);
