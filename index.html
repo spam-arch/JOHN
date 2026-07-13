@@ -61,8 +61,8 @@
 
     <script>
         (function() {
-            // ⚠️ REPLACE WITH YOUR REAL HUGGING FACE TOKEN
-            const HF_TOKEN = "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";
+            // ⚠️ Replace with your actual Hugging Face token if needed
+            const HF_TOKEN = "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";
             const HF_MODEL = "HuggingFaceH4/zephyr-7b-beta";
             const HF_API_URL = `https://api-inference.huggingface.co/models/${HF_MODEL}/v1/chat/completions`;
 
@@ -97,46 +97,35 @@
                 const d = ["interesting. tell me more.", "huh. never thought of that.", "i guess so.", "you really think so?"]; return d[Math.floor(Math.random()*d.length)];
             }
 
-            // List of free CORS proxies to try (order matters)
+            // Only proxies that support POST requests properly
             const PROXY_LIST = [
-                "https://corsproxy.io/?",                 // adds the target URL after ?
-                "https://api.allorigins.win/raw?url=",
-                "https://cors-anywhere.herokuapp.com/",
-                "https://thingproxy.freeboard.io/fetch/",
-                "https://proxy.cors.sh/"
+                "https://corsproxy.io/?",
+                "https://proxy.cors.sh/",
+                "https://cors-anywhere.herokuapp.com/"
             ];
 
             async function tryFetchWithProxy(body) {
-                // First try a direct call (works only on some non-browser environments)
+                // Try direct call first (may work in some environments)
                 try {
                     const directRes = await fetch(HF_API_URL, {
                         method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${HF_TOKEN}`,
-                            'Content-Type': 'application/json'
-                        },
+                        headers: { 'Authorization': `Bearer ${HF_TOKEN}`, 'Content-Type': 'application/json' },
                         body: JSON.stringify(body)
                     });
                     if (directRes.ok) return await directRes.json();
-                } catch (e) { /* expected */ }
+                } catch (e) { /* CORS error expected */ }
 
-                // Try each proxy until one succeeds
                 for (const proxy of PROXY_LIST) {
                     try {
                         const targetUrl = proxy.endsWith('?') ? proxy + encodeURIComponent(HF_API_URL) : proxy + HF_API_URL;
                         const res = await fetch(targetUrl, {
                             method: 'POST',
-                            headers: {
-                                'Authorization': `Bearer ${HF_TOKEN}`,
-                                'Content-Type': 'application/json'
-                            },
+                            headers: { 'Authorization': `Bearer ${HF_TOKEN}`, 'Content-Type': 'application/json' },
                             body: JSON.stringify(body)
                         });
                         if (res.ok) return await res.json();
                     } catch (e) { continue; }
                 }
-
-                // If all proxies fail, throw an error
                 throw new Error("All CORS proxies failed");
             }
 
