@@ -1,0 +1,18 @@
+{
+  "windowSeconds": 45,
+  "checkIntervalSeconds": 5,
+  "calmSeconds": 45,
+  "minChangeIntervalSeconds": 15,
+  "dropThresholdFraction": 0.85,
+  "ignoreBots": true,
+  "leaveManualSlowmodeAlone": true,
+  "watchChannelIds": [],
+  "ignoreChannelIds": [],
+  "tiers": [
+    { "minMessagesPerMinute": 0,   "slowmodeSeconds": 0 },
+    { "minMessagesPerMinute": 30,  "slowmodeSeconds": 3 },
+    { "minMessagesPerMinute": 60,  "slowmodeSeconds": 6 },
+    { "minMessagesPerMinute": 100, "slowmodeSeconds": 10 },
+    { "minMessagesPerMinute": 200, "slowmodeSeconds": 20 }
+  ]
+}

@@ -1,0 +1,55 @@
+# BLOCKLIST: the bot never learns from, and never posts, anything matching these.
+#
+# One entry per line. Lines starting with # are comments.
+# A plain entry matches whole words only (plurals included) and ignores capitals, symbols and
+# lookalike characters, so "p0rn", "P.O.R.N" and "pooorn" are all caught.
+# Start a line with ~ to match anywhere inside words instead (good for stems like ~masturbat).
+# Multi-word phrases are fine.
+#
+# This is a STARTER list. It is not complete and it does not include slurs; add the ones that
+# matter for your server. For a much bigger list in the same one-term-per-line format, see the
+# open-source "List of Dirty, Naughty, Obscene, and Otherwise Bad Words" (LDNOOBW) on GitHub.
+
+# --- explicit sexual content ---
+porn
+porno
+pornhub
+~pornograph
+xxx
+nsfw
+hentai
+blowjob
+handjob
+cumshot
+cum
+orgasm
+~masturbat
+dildo
+vibrator
+gangbang
+threesome
+onlyfans
+anal
+dick
+cock
+pussy
+tits
+titties
+boobs
+boobies
+nude
+nudes
+naked
+rape
+raped
+raping
+rapist
+whore
+slut
+
+# --- telling someone to hurt themselves ---
+kys
+kill yourself
+kill urself
+hang yourself
+go die

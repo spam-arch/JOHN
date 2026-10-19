@@ -1,0 +1,47 @@
+# WATCHLIST: the bot avoids these. If one still slips into something it is about to say,
+# the message is held for your approval instead of being posted.
+#
+# Same format as blocklist.txt (one entry per line, # for comments, ~ for stems).
+# Entries that are emoji are matched exactly.
+
+# --- suggestive / adult-adjacent ---
+sex
+sexy
+sexual
+horny
+erotic
+fetish
+kink
+bdsm
+lingerie
+stripper
+hooker
+penis
+vagina
+breast
+breasts
+nipple
+nipples
+thot
+🍆
+🍑
+💦
+🔞
+👅
+
+# --- self-harm and violence ---
+suicide
+self harm
+murder
+genocide
+
+# --- extremism and heavy topics ---
+nazi
+hitler
+heil
+holocaust
+
+# --- drugs ---
+cocaine
+heroin
+meth
